@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>24/7 — 同人サークル</title>
+  <meta name="description" content="24/7 — オリジナル同人サークル。頒布物、イベント情報、連絡先を掲載しています。" />
+
+  <!-- Google Font (optional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0f1724; /* dark navy */
+      --card:#0b1320;
+      --muted:#98a0b3;
+      --accent:#ff6b6b;
+      --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+      color-scheme: dark;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:'Noto Sans JP',system-ui,-apple-system,Segoe UI,Roboto,'Hiragino Kaku Gothic ProN',YuGothic,Meiryo,sans-serif;background:linear-gradient(180deg,var(--bg),#071022);color:#e6eef8}
+    a{color:inherit;text-decoration:none}
+
+    header{position:sticky;top:0;backdrop-filter: blur(6px);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-bottom:1px solid rgba(255,255,255,0.03);z-index:40}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo .mark{font-weight:900;font-size:22px;background:linear-gradient(90deg,var(--accent),#ffd166);-webkit-background-clip:text;background-clip:text;color:transparent}
+    nav ul{display:flex;gap:18px;align-items:center;margin:0;padding:0;list-style:none}
+    nav a{font-weight:600;color:var(--muted);padding:8px;border-radius:8px}
+    nav a:hover{color:#fff; background:var(--glass)}
+    .cta{padding:8px 14px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#ff8a80);color:#071022;font-weight:700}
+
+    /* Hero */
+    .hero{padding:48px 0 36px}
+    .hero-inner{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:center}
+    .hero h1{font-size:40px;margin:0 0 12px;line-height:1.02}
+    .hero p{color:var(--muted);margin:0 0 18px}
+    .badge{display:inline-block;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:999px;font-weight:700;color:var(--muted);font-size:14px}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);padding:16px;border:1px solid rgba(255,255,255,0.03)}
+    .cover{height:220px;border-radius:12px;background:linear-gradient(135deg,#0b1a2b,#102034);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.08);font-weight:900;font-size:42px}
+
+    /* Works gallery */
+    .section{margin:28px 0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .item{border-radius:12px;overflow:hidden;background:#071024;border:1px solid rgba(255,255,255,0.03);cursor:pointer;transition:transform .18s ease}
+    .item:hover{transform:translateY(-6px)}
+    .item .thumb{height:160px;background-size:cover;background-position:center}
+    .item .meta{padding:10px}
+    .item h3{margin:0 0 6px;font-size:16px}
+    .item p{margin:0;color:var(--muted);font-size:13px}
+
+    /* Events / contact */
+    .two-col{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    .event-list{display:flex;flex-direction:column;gap:12px}
+    .event{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.02)}
+    .muted{color:var(--muted)}
+
+    footer{padding:28px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+
+    /* Responsive */
+    @media (max-width:980px){
+      .hero-inner,.two-col{grid-template-columns:1fr}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      nav ul{display:none}
+    }
+    @media (max-width:560px){
+      .grid{grid-template-columns:1fr}
+      .cover{height:160px}
+      .hero h1{font-size:28px}
+    }
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:60;padding:28px;opacity:0;pointer-events:none;transition:opacity .18s ease}
+    .modal.open{opacity:1;pointer-events:auto}
+    .modal .panel{max-width:900px;width:100%;background:linear-gradient(180deg,#071022,#06121b);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)}
+    .modal .close{float:right;background:none;border:0;color:var(--muted);font-weight:700}
+
+    /* small helpers */
+    .row{display:flex;gap:12px;align-items:center}
+    .spacer{flex:1}
+
+    /* accessibility focus */
+    a:focus,button:focus{outline:3px solid rgba(255,107,107,0.18);outline-offset:3px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="logo">
+        <div class="mark">24/7</div>
+        <div>
+          <div style="font-weight:700">24/7</div>
+          <div class="muted" style="font-size:12px">オリジナル同人サークル</div>
+        </div>
+      </div>
+
+      <nav aria-label="メインナビ">
+        <ul>
+          <li><a href="#works">頒布物</a></li>
+          <li><a href="#events">イベント</a></li>
+          <li><a href="#about">紹介</a></li>
+          <li><a href="#contact">連絡</a></li>
+        </ul>
+      </nav>
+
+      <div class="row">
+        <a class="cta" href="#contact">お問い合わせ</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="badge">新刊あり</span>
+          <h1>24/7 — 日常×ファンタジーのオリジナル同人サークル</h1>
+          <p>イラスト・漫画・小説の頒布を中心に活動しています。年に数回のイベント参加とオンライン頒布を行っています。</p>
+          <div style="display:flex;gap:12px;margin-top:18px">
+            <a class="card" href="#works" style="display:inline-block">最新の頒布物を見る</a>
+            <a class="card" href="#events" style="display:inline-block">イベント予定</a>
+          </div>
+
+          <div class="section" style="margin-top:22px">
+            <h3 style="margin:0 0 8px">お知らせ</h3>
+            <div class="card muted" style="padding:12px">次回コミックマーケット（例）に出展予定。ブース番号は確定次第ここに掲載します。</div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card">
+            <div class="cover">24/7<br><small style="opacity:.6">circle cover</small></div>
+            <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+              <div>
+                <div style="font-weight:800">次回イベント</div>
+                <div class="muted">2025-09-21 — 同人イベントA</div>
+              </div>
+              <div class="spacer"></div>
+              <a class="cta" href="#contact">サークル参加申込</a>
+            </div>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <div class="card">
+            <div style="font-weight:700;margin-bottom:8px">SNS</div>
+            <div class="muted">最新情報や進捗はSNSでお知らせします。</div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <a class="card" href="#">Twitter</a>
+              <a class="card" href="#">Pixiv</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="works" class="section">
+      <h2 style="margin:0 0 12px">頒布物</h2>
+      <div class="grid" id="gallery">
+        <!-- items: thumbnails use inline style backgrounds; change to real images later -->
+        <article class="item" data-title="日常の欠片" data-desc="短編集（イラスト＋短編小説）・32ページ・500円" data-img="https://picsum.photos/seed/1/800/600">
+          <div class="thumb" style="background-image:url('https://picsum.photos/seed/1/800/600')"></div>
+          <div class="meta">
+            <h3>日常の欠片</h3>
+            <p>短編集 / 2025</p>
+          </div>
+        </article>
+
+        <article class="item" data-title="夜明けの街" data-desc="フルカラー画集・A5・24ページ・800円" data-img="https://picsum.photos/seed/2/800/600">
+          <div class="thumb" style="background-image:url('https://picsum.photos/seed/2/800/600')"></div>
+          <div class="meta">
+            <h3>夜明けの街</h3>
+            <p>画集 / 2024</p>
+          </div>
+        </article>
+
+        <article class="item" data-title="星を売る店" data-desc="読み切り漫画・B5・28ページ・600円" data-img="https://picsum.photos/seed/3/800/600">
+          <div class="thumb" style="background-image:url('https://picsum.photos/seed/3/800/600')"></div>
+          <div class="meta">
+            <h3>星を売る店</h3>
+            <p>漫画 / 2023</p>
+          </div>
+        </article>
+
+        <article class="item" data-title="サウンドトラック" data-desc="オリジナルBGM集（ダウンロードコード付）・1000円" data-img="https://picsum.photos/seed/4/800/600">
+          <div class="thumb" style="background-image:url('https://picsum.photos/seed/4/800/600')"></div>
+          <div class="meta">
+            <h3>サウンドトラック</h3>
+            <p>音楽 / 2025</p>
+          </div>
+        </article>
+
+        <article class="item" data-title="風の名前" data-desc="合同誌参加作品・B5・36ページ・700円" data-img="https://picsum.photos/seed/5/800/600">
+          <div class="thumb" style="background-image:url('https://picsum.photos/seed/5/800/600')"></div>
+          <div class="meta">
+            <h3>風の名前</h3>
+            <p>合同誌 / 2022</p>
+          </div>
+        </article>
+
+        <article class="item" data-title="未発表短編" data-desc="次回頒布予定の読み切り短編（制作中）" data-img="https://picsum.photos/seed/6/800/600">
+          <div class="thumb" style="background-image:url('https://picsum.photos/seed/6/800/600')"></div>
+          <div class="meta">
+            <h3>未発表短編</h3>
+            <p>制作中</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="events" class="section">
+      <h2 style="margin:0 0 12px">イベント予定</h2>
+      <div class="two-col">
+        <div>
+          <div class="event-list">
+            <div class="event">
+              <div style="font-weight:800">2025-09-21 — 同人イベントA</div>
+              <div class="muted">ブース：未定 / 新刊予定あり</div>
+            </div>
+            <div class="event">
+              <div style="font-weight:800">2025-12-28 — 冬コミ (C101)（予定）</div>
+              <div class="muted">申込中 / 詳細は決まり次第更新</div>
+            </div>
+            <div class="event">
+              <div style="font-weight:800">オンライン頒布（常設）</div>
+              <div class="muted">BOOTHなどで常時通販を行っています（準備中）</div>
+            </div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card">
+            <div style="font-weight:700">頒布ポリシー</div>
+            <p class="muted" style="margin-top:8px">当サークルの作品は二次創作を含みません。商用利用・無断転載はご遠慮ください。作品の利用についてはお問い合わせください。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <h2 style="margin:0 0 12px">サークル紹介</h2>
+      <div class="card">
+        <p style="margin:0">24/7は、日常のささやかな風景とファンタジーを組み合わせた作品作りを得意とする同人サークルです。イラスト・漫画・小説を中心に、紙に残る本や音源などを制作しています。メンバーは複数名で活動しています（イラスト担当・執筆担当・音楽担当）。</p>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <h2 style="margin:0 0 12px">お問い合わせ</h2>
+      <div class="two-col">
+        <div>
+          <form id="contactForm" class="card" onsubmit="return false;">
+            <label style="display:block;margin-bottom:6px">お名前</label>
+            <input id="name" type="text" placeholder="山田 太郎" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;margin-bottom:10px">
+            <label style="display:block;margin-bottom:6px">メール</label>
+            <input id="email" type="email" placeholder="name@example.com" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;margin-bottom:10px">
+            <label style="display:block;margin-bottom:6px">内容</label>
+            <textarea id="message" rows="6" placeholder="お問い合わせ内容" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit"></textarea>
+            <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+              <button class="cta" onclick="submitForm()">送信（デモ）</button>
+              <div class="muted" style="font-size:13px">※このサンプルは送信処理を行いません。</div>
+            </div>
+          </form>
+
+          <div style="height:12px"></div>
+
+          <div class="card">
+            <div style="font-weight:700">メール</div>
+            <div class="muted">contact@24-7.example</div>
+            <div style="height:8px"></div>
+            <div style="font-weight:700">通販</div>
+            <div class="muted">BOOTH準備中</div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card">
+            <div style="font-weight:700">メンバー募集</div>
+            <p class="muted">イラスト・漫画・編集・舞台出展の手伝いをしてくれる方を不定期募集しています。興味がある方は上記メールアドレスへご連絡ください。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-weight:800">24/7</div>
+        <div class="muted">© 24/7 同人サークル - All rights reserved</div>
+        <div class="spacer"></div>
+        <div class="muted">Site designed with ❤</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal for work preview -->
+  <div id="modal" class="modal" role="dialog" aria-hidden="true">
+    <div class="panel">
+      <button class="close" onclick="closeModal()">閉じる</button>
+      <div id="modalBody" style="display:flex;gap:14px;align-items:flex-start">
+        <div style="flex:1">
+          <div id="modalImg" style="height:320px;border-radius:10px;background-size:cover;background-position:center"></div>
+        </div>
+        <div style="width:320px">
+          <h3 id="modalTitle" style="margin-top:0">Title</h3>
+          <p id="modalDesc" class="muted">Description</p>
+          <div style="height:18px"></div>
+          <div style="display:flex;gap:8px">
+            <a class="cta" href="#">頒布ページ</a>
+            <a class="card" href="#">詳細</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Gallery modal behavior
+    const items = document.querySelectorAll('.item');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+
+    items.forEach(it => {
+      it.addEventListener('click', () => {
+        const title = it.dataset.title;
+        const desc = it.dataset.desc;
+        const img = it.dataset.img;
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+        modalImg.style.backgroundImage = `url('${img}')`;
+        openModal();
+      });
+    });
+
+    function openModal(){
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    // Fake contact action
+    function submitForm(){
+      const name = document.getElementById('name').value || '名無し';
+      const email = document.getElementById('email').value || '----';
+      alert(name + 'さん、(デモ)送信を受け付けました。\nメール:' + email);
+    }
+
+    // Close modal on ESC
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeModal();
+    });
+
+    // Smooth scroll for in-page links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if(href === '#') return;
+        const target = document.querySelector(href);
+        if(target){
+          e.preventDefault();
+          target.scrollIntoView({behavior:'smooth',block:'start'});
+        }
+      });
+    });
+  </script>
+</body>
+</html>
